@@ -1,7 +1,6 @@
 from PyQt5.QtWidgets import  QApplication, QWidget, QDesktopWidget, QPushButton, QLineEdit, QLabel, QGridLayout, QPlainTextEdit
-from PyQt5.QtGui import QImage, QPalette, QBrush
-import PyQt5.QtGui as QtGui
-from PyQt5.QtCore import Qt, QSize
+from server import Server
+
 import sys
 
 class ClientApp(QWidget):
@@ -21,22 +20,23 @@ class ClientApp(QWidget):
         label2.setObjectName('label2')
         layout.addWidget(label2, 1, 0, 1, 1)
 
-        ipInput = QLineEdit()
-        ipInput.setObjectName('ipInput')
-        layout.addWidget(ipInput, 1, 1)
+        self.ipInput = QLineEdit()
+        self.ipInput.setObjectName('ipInput')
+        layout.addWidget(self.ipInput, 1, 1)
 
         label3 = QLabel('PORT')
         label3.setObjectName('label3')
         layout.addWidget(label3, 2, 0)
 
-        portInput = QLineEdit()
-        portInput.setObjectName('portInput')
-        layout.addWidget(portInput, 2, 1)
+        self.portInput = QLineEdit()
+        self.portInput.setObjectName('portInput')
+        layout.addWidget(self.portInput, 2, 1)
 
 
         chatBtn = QPushButton('채팅방 열기')
         chatBtn.setObjectName('chatBtn')
         layout.addWidget(chatBtn, 1, 2, 2, 1)
+        chatBtn.clicked.connect(self.open)
 
         endBtn = QPushButton('채팅방 종료')
         endBtn.setObjectName('endBtn')
@@ -76,7 +76,7 @@ class ClientApp(QWidget):
         layout.addWidget(messageBtn, 7, 2, 1, -1)
 
 
-        self.setWindowTitle('클라이언트')
+        self.setWindowTitle('서버')
         self.resize(700, 800)
         self.center()
         self.show()
@@ -91,6 +91,12 @@ class ClientApp(QWidget):
         qr.moveCenter(cp)
         # 현재의 창을 qr의 위치로 옮긴다.
         self.move(qr.topLeft())
+
+    def open(self):
+        self.ip = self.ipInput.text()
+        self.port = self.portInput.text()
+        self.server = Server(self.ip, self.port)
+
 
 
 

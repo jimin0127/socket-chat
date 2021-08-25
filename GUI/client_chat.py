@@ -1,7 +1,5 @@
 from PyQt5.QtWidgets import  QApplication, QWidget, QDesktopWidget, QPushButton, QLineEdit, QLabel, QGridLayout, QPlainTextEdit
-from PyQt5.QtGui import QImage, QPalette, QBrush
-import PyQt5.QtGui as QtGui
-from PyQt5.QtCore import Qt, QSize
+from client import Client
 import sys
 
 class ClientApp(QWidget):
@@ -21,21 +19,22 @@ class ClientApp(QWidget):
         label2.setObjectName('label2')
         layout.addWidget(label2, 1, 0, 1, 1)
 
-        ipInput = QLineEdit()
-        ipInput.setObjectName('ipInput')
-        layout.addWidget(ipInput, 1, 1)
+        self.ipInput = QLineEdit()
+        self.ipInput.setObjectName('ipInput')
+        layout.addWidget(self.ipInput, 1, 1)
 
         label3 = QLabel('PORT')
         label3.setObjectName('label3')
         layout.addWidget(label3, 2, 0)
 
-        portInput = QLineEdit()
-        portInput.setObjectName('portInput')
-        layout.addWidget(portInput, 2, 1)
+        self.portInput = QLineEdit()
+        self.portInput.setObjectName('portInput')
+        layout.addWidget(self.portInput, 2, 1)
 
 
         chatBtn = QPushButton('채팅방 열기')
         chatBtn.setObjectName('chatBtn')
+        chatBtn.clicked.connect(self.open)
         layout.addWidget(chatBtn, 1, 2, 2, 1)
 
         endBtn = QPushButton('채팅방 종료')
@@ -59,13 +58,14 @@ class ClientApp(QWidget):
         chat.setObjectName('chat')
         layout.addWidget(chat, 5, 0, 1, -1)
 
-        chatMessage = QLineEdit()
-        chatMessage.setObjectName('chatMessage')
-        layout.addWidget(chatMessage, 6, 0, 1, 2)
+        self.chatMessage = QLineEdit()
+        self.chatMessage.setObjectName('chatMessage')
+        layout.addWidget(self.chatMessage, 6, 0, 1, 2)
 
         messageBtn = QPushButton('보내기')
         messageBtn.setObjectName('messageBtn')
         layout.addWidget(messageBtn, 6, 2, 1, -1)
+        messageBtn.clicked.connect(self.send)
 
 
         self.setWindowTitle('클라이언트')
@@ -84,6 +84,16 @@ class ClientApp(QWidget):
         # 현재의 창을 qr의 위치로 옮긴다.
         self.move(qr.topLeft())
 
+
+    def open(self):
+        self.ip = self.ipInput.text()
+        self.port = self.portInput.text()
+        self.client = Client(self.ip, self.port)
+
+    def send(self):
+        message = self.chatMessage.text()
+        if self.client:
+            self.client.send_message(message)
 
 
 
